@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { CellState } from '../../types/sudoku';
 import { digitToMonsterChar } from '../../variants/monster';
 
@@ -14,18 +14,7 @@ interface SudokuCellProps {
   onClick: (e: React.MouseEvent) => void;
 }
 
-const PALETTE_COLORS: Record<number, string> = {
-  1: 'bg-red-500/25 border-red-500/40 text-red-100',
-  2: 'bg-orange-500/25 border-orange-500/40 text-orange-100',
-  3: 'bg-amber-500/25 border-amber-500/40 text-amber-100',
-  4: 'bg-green-500/25 border-green-500/40 text-green-100',
-  5: 'bg-teal-500/25 border-teal-500/40 text-teal-100',
-  6: 'bg-sky-500/25 border-sky-500/40 text-sky-100',
-  7: 'bg-purple-500/25 border-purple-500/40 text-purple-100',
-  8: 'bg-pink-500/25 border-pink-500/40 text-pink-100',
-};
-
-export const SudokuCell: React.FC<SudokuCellProps> = ({
+export const SudokuCell: React.FC<SudokuCellProps> = memo(({
   cell,
   size,
   isSelected,
@@ -36,78 +25,79 @@ export const SudokuCell: React.FC<SudokuCellProps> = ({
   isError,
   onClick,
 }) => {
-  const { value, given, cornerMarks, centerMarks, color } = cell;
+  const { row, col, value, given, cornerMarks, centerMarks, color } = cell;
 
-  // Compute background classes
-  let bgClass = 'bg-slate-900/60 hover:bg-slate-800/80';
+  const boxSize = size === 16 ? 4 : size === 6 ? 3 : size === 4 ? 2 : 3;
+  const isBoxRight = (col + 1) % boxSize === 0 && col !== size - 1;
+  const isBoxBottom = (row + 1) % (size === 6 ? 2 : boxSize) === 0 && row !== size - 1;
 
-  if (color && PALETTE_COLORS[color]) {
-    bgClass = PALETTE_COLORS[color];
-  } else if (isError) {
-    bgClass = 'bg-red-950/70 border-red-500 text-red-200';
+  // Background and border resolution
+  let bgStyle: React.CSSProperties = {
+    backgroundColor: 'var(--cell-bg)',
+  };
+
+  if (color) {
+    bgStyle.backgroundColor = `var(--color-p${color})`;
+    bgStyle.opacity = 0.85;
   } else if (isSelected) {
-    bgClass = 'bg-cyan-500/30 ring-2 ring-cyan-400 z-10';
+    bgStyle.backgroundColor = 'var(--cell-selected)';
+  } else if (isError) {
+    bgStyle.backgroundColor = 'var(--cell-error)';
   } else if (isHintPrimary) {
-    bgClass = 'bg-cyan-500/35 ring-2 ring-cyan-400 animate-pulse z-10';
+    bgStyle.backgroundColor = 'rgba(0, 240, 255, 0.28)';
   } else if (isHintTarget) {
-    bgClass = 'bg-rose-500/30 ring-2 ring-rose-400 animate-pulse z-10';
-  } else if (isSameDigit && value !== null) {
-    bgClass = 'bg-amber-500/25 ring-1 ring-amber-400/60';
+    bgStyle.backgroundColor = 'rgba(244, 63, 94, 0.25)';
+  } else if (isSameDigit) {
+    bgStyle.backgroundColor = 'var(--cell-same-digit)';
   } else if (isPeer) {
-    bgClass = 'bg-slate-800/45';
+    bgStyle.backgroundColor = 'var(--cell-peer)';
   }
 
-  const formatDigit = (d: number) => {
-    return size === 16 ? digitToMonsterChar(d) : `${d}`;
-  };
+  const borderClasses = `
+    ${isBoxRight ? 'border-r-2 border-r-[var(--border-strong)]' : 'border-r border-r-[var(--border-subtle)]'}
+    ${isBoxBottom ? 'border-b-2 border-b-[var(--border-strong)]' : 'border-b border-b-[var(--border-subtle)]'}
+  `;
 
   return (
     <div
       onClick={onClick}
-      className={`relative flex items-center justify-center select-none cursor-pointer transition-colors duration-150 aspect-square ${bgClass}`}
-      style={{
-        borderRightWidth: (cell.col + 1) % (size === 16 ? 4 : size === 6 ? 3 : size === 4 ? 2 : 3) === 0 && cell.col !== size - 1 ? '2px' : '1px',
-        borderBottomWidth: (cell.row + 1) % (size === 16 ? 4 : size === 6 ? 2 : size === 4 ? 2 : 3) === 0 && cell.row !== size - 1 ? '2px' : '1px',
-        borderColor: (cell.col + 1) % (size === 16 ? 4 : size === 6 ? 3 : size === 4 ? 2 : 3) === 0 || (cell.row + 1) % (size === 16 ? 4 : size === 6 ? 2 : size === 4 ? 2 : 3) === 0 ? 'var(--border-block)' : 'var(--border-grid)',
-      }}
+      style={bgStyle}
+      className={`relative aspect-square flex items-center justify-center cursor-pointer select-none transition-all duration-150 ${borderClasses} ${
+        isSelected
+          ? 'ring-2 ring-[var(--border-active)] z-20 shadow-lg scale-[1.02]'
+          : 'hover:brightness-125'
+      }`}
     >
-      {/* Placed / Given Digit */}
-      {value !== null ? (
+      {/* Placed Main Value */}
+      {value !== null && value !== 0 ? (
         <span
-          className={`font-semibold tabular-nums leading-none ${
-            size === 16
-              ? 'text-sm md:text-base'
-              : size === 4
-              ? 'text-4xl md:text-5xl'
-              : 'text-2xl md:text-3xl'
-          } ${
+          className={`font-mono text-2xl md:text-3xl tabular-nums leading-none tracking-tight ${
             given
-              ? 'text-sky-400 font-extrabold'
-              : isError
-              ? 'text-rose-400'
-              : 'text-slate-100'
-          }`}
+              ? 'font-extrabold text-[var(--text-given)]'
+              : 'font-semibold text-[var(--text-user)] animate-pop'
+          } ${isError ? 'text-rose-400 font-black' : ''}`}
         >
-          {formatDigit(value)}
+          {size === 16 ? digitToMonsterChar(value) : value}
         </span>
       ) : (
-        /* Candidates Mode */
-        <div className="absolute inset-0.5 p-0.5 pointer-events-none flex flex-col justify-between">
-          {/* Corner Marks (Snyder notation) */}
+        /* Candidates & Pencil Marks View */
+        <div className="absolute inset-0 p-1 flex flex-col justify-between pointer-events-none">
+          {/* Snyder Corner Candidates */}
           {cornerMarks.length > 0 && (
-            <div className="flex flex-wrap justify-between text-[9px] md:text-[10px] font-bold text-slate-300 tabular-nums leading-none tracking-tighter">
-              <span>{cornerMarks[0] ? formatDigit(cornerMarks[0]) : ''}</span>
-              <span>{cornerMarks[1] ? formatDigit(cornerMarks[1]) : ''}</span>
-              <span>{cornerMarks[2] ? formatDigit(cornerMarks[2]) : ''}</span>
-              <span>{cornerMarks[3] ? formatDigit(cornerMarks[3]) : ''}</span>
+            <div className="flex flex-wrap gap-x-1 justify-between text-[9px] md:text-[10px] font-mono font-bold text-[var(--text-accent)] leading-none">
+              {cornerMarks.map(d => (
+                <span key={d}>{d}</span>
+              ))}
             </div>
           )}
 
-          {/* Center Marks (Standard Candidate clusters) */}
+          {/* Center Candidates 3x3 Grid */}
           {centerMarks.length > 0 && (
-            <div className="my-auto flex flex-wrap items-center justify-center gap-x-0.5 text-[8px] md:text-[9px] font-medium text-slate-400 tabular-nums leading-none">
-              {centerMarks.map(d => (
-                <span key={d}>{formatDigit(d)}</span>
+            <div className="grid grid-cols-3 gap-[1px] my-auto justify-items-center items-center text-[8px] md:text-[9px] font-mono font-medium text-[var(--text-note)] leading-none">
+              {Array.from({ length: 9 }, (_, i) => i + 1).map(d => (
+                <span key={d} className="w-2.5 h-2.5 flex items-center justify-center">
+                  {centerMarks.includes(d) ? d : ''}
+                </span>
               ))}
             </div>
           )}
@@ -115,4 +105,6 @@ export const SudokuCell: React.FC<SudokuCellProps> = ({
       )}
     </div>
   );
-};
+});
+
+SudokuCell.displayName = 'SudokuCell';

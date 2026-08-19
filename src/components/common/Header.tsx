@@ -15,6 +15,7 @@ import {
   VolumeX,
   Play,
   Pause,
+  Plus,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -48,135 +49,146 @@ export const Header: React.FC<HeaderProps> = ({
   const timeFormatted = `${minutes}:${String(remSec).padStart(2, '0')}`;
 
   return (
-    <header className="w-full max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-md sticky top-0 z-30">
-      {/* Brand Logo & Current Mode */}
-      <div className="flex items-center gap-3">
-        <div
-          onClick={onOpenNewGame}
-          className="flex items-center gap-2 cursor-pointer group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-black text-lg shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
-            K
-          </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold text-base tracking-tight text-slate-100 flex items-center gap-1">
-              <span>Kudosu</span>
-              <span className="text-[10px] text-cyan-400 bg-cyan-950 px-1.5 py-0.2 rounded-full border border-cyan-800">
-                PRO
+    <header className="w-full border-b border-[var(--border-subtle)] bg-[var(--bg-card)]/90 backdrop-blur-md sticky top-0 z-40 transition-colors">
+      <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
+        {/* Brand Logo & Current Mode */}
+        <div className="flex items-center gap-3">
+          <div
+            onClick={onOpenNewGame}
+            className="flex items-center gap-2.5 cursor-pointer group"
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-black text-lg shadow-lg group-hover:scale-105 transition-transform">
+              K
+            </div>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)] flex items-center gap-1.5">
+                <span>Kudosu</span>
+                <span className="text-[10px] font-mono font-bold text-[var(--text-accent)] bg-[var(--bg-card-subtle)] px-1.5 py-0.5 rounded-full border border-[var(--border-subtle)]">
+                  STUDIO
+                </span>
               </span>
-            </span>
-            <span className="text-[10px] text-slate-400 font-medium">
-              {puzzle ? `${puzzle.variant.toUpperCase()} • ${puzzle.difficulty.toUpperCase()}` : 'Studio'}
-            </span>
+              <span className="text-[10px] text-[var(--text-secondary)] font-medium">
+                {puzzle ? `${puzzle.variant.toUpperCase()} • ${puzzle.difficulty.toUpperCase()}` : 'Zen Mode'}
+              </span>
+            </div>
           </div>
+
+          {/* Live Stopwatch Pill */}
+          {showTimer && puzzle && (
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-xs font-mono font-bold text-[var(--text-primary)] shadow-sm">
+              <button
+                onClick={togglePause}
+                className="text-[var(--text-secondary)] hover:text-[var(--text-accent)] transition-colors"
+                title={isPaused ? 'Resume' : 'Pause'}
+              >
+                {isPaused ? <Play className="w-3.5 h-3.5 text-amber-400" /> : <Pause className="w-3.5 h-3.5" />}
+              </button>
+              <span className={isPaused ? 'text-amber-400 animate-pulse' : 'text-[var(--text-primary)]'}>
+                {timeFormatted}
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Live Timer */}
-        {showTimer && puzzle && (
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-slate-900 border border-slate-800 rounded-xl text-xs font-mono font-bold text-slate-200">
-            <button
-              onClick={togglePause}
-              className="text-slate-400 hover:text-cyan-400 transition-colors"
-              title={isPaused ? 'Resume' : 'Pause'}
-            >
-              {isPaused ? <Play className="w-3 h-3 text-amber-400" /> : <Pause className="w-3 h-3" />}
-            </button>
-            <span className={isPaused ? 'text-amber-400 animate-pulse' : 'text-slate-100'}>
-              {timeFormatted}
-            </span>
-          </div>
-        )}
-      </div>
+        {/* Studio Navigation Bar */}
+        <nav className="flex items-center gap-1">
+          <button
+            onClick={onOpenNewGame}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] hover:border-[var(--border-active)] text-[var(--text-primary)] transition-all"
+            title="Generate New Puzzle"
+          >
+            <Plus className="w-3.5 h-3.5 text-[var(--text-accent)]" />
+            <span className="hidden md:inline">New Game</span>
+          </button>
 
-      {/* Center Nav Items */}
-      <nav className="flex items-center gap-1">
-        <button
-          onClick={onOpenAcademy}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-cyan-400 hover:bg-slate-900 transition-colors"
-          title="Academy (18 Techniques)"
-        >
-          <GraduationCap className="w-4 h-4 text-cyan-400" />
-          <span className="hidden md:inline">Academy</span>
-        </button>
+          <button
+            onClick={onOpenAcademy}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-subtle)] transition-colors"
+            title="Academy (18 Chapters)"
+          >
+            <GraduationCap className="w-4 h-4 text-cyan-400" />
+            <span className="hidden lg:inline">Academy</span>
+          </button>
 
-        <button
-          onClick={onOpenDaily}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-amber-400 hover:bg-slate-900 transition-colors"
-          title="Daily Challenge Calendar"
-        >
-          <Calendar className="w-4 h-4 text-amber-400" />
-          <span className="hidden md:inline">Daily</span>
-        </button>
+          <button
+            onClick={onOpenDaily}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-subtle)] transition-colors"
+            title="Daily Challenge Calendar"
+          >
+            <Calendar className="w-4 h-4 text-amber-400" />
+            <span className="hidden lg:inline">Daily</span>
+          </button>
 
-        <button
-          onClick={onOpenAnalytics}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-emerald-400 hover:bg-slate-900 transition-colors"
-          title="Speedcubing Analytics & Replays"
-        >
-          <BarChart3 className="w-4 h-4 text-emerald-400" />
-          <span className="hidden md:inline">Analytics</span>
-        </button>
+          <button
+            onClick={onOpenAnalytics}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-subtle)] transition-colors"
+            title="Speedcubing Telemetry & Heatmap"
+          >
+            <BarChart3 className="w-4 h-4 text-emerald-400" />
+            <span className="hidden lg:inline">Analytics</span>
+          </button>
 
-        <button
-          onClick={onOpenCreator}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-purple-400 hover:bg-slate-900 transition-colors"
-          title="Custom Puzzle Creator"
-        >
-          <PenTool className="w-4 h-4 text-purple-400" />
-          <span className="hidden md:inline">Creator</span>
-        </button>
+          <button
+            onClick={onOpenCreator}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-subtle)] transition-colors"
+            title="Custom Puzzle Creator"
+          >
+            <PenTool className="w-4 h-4 text-purple-400" />
+            <span className="hidden lg:inline">Creator</span>
+          </button>
 
-        <button
-          onClick={onOpenOcr}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-sky-400 hover:bg-slate-900 transition-colors"
-          title="Camera & Image OCR Scanner"
-        >
-          <Camera className="w-4 h-4 text-sky-400" />
-          <span className="hidden md:inline">Camera</span>
-        </button>
+          <button
+            onClick={onOpenOcr}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-subtle)] transition-colors"
+            title="Camera & Image OCR Scanner"
+          >
+            <Camera className="w-4 h-4 text-sky-400" />
+            <span className="hidden lg:inline">Scanner</span>
+          </button>
 
-        <button
-          onClick={onOpenPdf}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-rose-400 hover:bg-slate-900 transition-colors"
-          title="Printable Vector PDF Studio"
-        >
-          <Printer className="w-4 h-4 text-rose-400" />
-          <span className="hidden md:inline">Print</span>
-        </button>
-      </nav>
+          <button
+            onClick={onOpenPdf}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-subtle)] transition-colors"
+            title="Printable Vector PDF Studio"
+          >
+            <Printer className="w-4 h-4 text-rose-400" />
+            <span className="hidden lg:inline">Print</span>
+          </button>
+        </nav>
 
-      {/* Right Controls: Themes, Audio, Settings */}
-      <div className="flex items-center gap-1.5 relative">
-        <button
-          onClick={() => setShowThemeDrawer(!showThemeDrawer)}
-          className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors"
-          title="Themes"
-        >
-          <Palette className="w-4 h-4 text-pink-400" />
-        </button>
+        {/* Quick Utility Tools: Theme, Sound, Settings */}
+        <div className="flex items-center gap-1.5 relative">
+          <button
+            onClick={() => setShowThemeDrawer(!showThemeDrawer)}
+            className="p-2 rounded-xl bg-[var(--bg-card-subtle)] hover:border-[var(--border-active)] border border-[var(--border-subtle)] text-[var(--text-primary)] transition-colors shadow-sm"
+            title="Themes"
+          >
+            <Palette className="w-4 h-4 text-pink-400" />
+          </button>
 
-        <button
-          onClick={toggleSound}
-          className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors"
-          title={soundMuted ? 'Unmute SFX' : 'Mute SFX'}
-        >
-          {soundMuted ? <VolumeX className="w-4 h-4 text-slate-500" /> : <Volume2 className="w-4 h-4 text-cyan-400" />}
-        </button>
+          <button
+            onClick={toggleSound}
+            className="p-2 rounded-xl bg-[var(--bg-card-subtle)] hover:border-[var(--border-active)] border border-[var(--border-subtle)] text-[var(--text-primary)] transition-colors shadow-sm"
+            title={soundMuted ? 'Unmute SFX' : 'Mute SFX'}
+          >
+            {soundMuted ? <VolumeX className="w-4 h-4 text-slate-500" /> : <Volume2 className="w-4 h-4 text-[var(--text-accent)]" />}
+          </button>
 
-        <button
-          onClick={onOpenSettings}
-          className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors"
-          title="Settings"
-        >
-          <Settings className="w-4 h-4" />
-        </button>
+          <button
+            onClick={onOpenSettings}
+            className="p-2 rounded-xl bg-[var(--bg-card-subtle)] hover:border-[var(--border-active)] border border-[var(--border-subtle)] text-[var(--text-primary)] transition-colors shadow-sm"
+            title="Settings"
+          >
+            <Settings className="w-4 h-4" />
+          </button>
 
-        {/* Theme Drawer Popover */}
-        {showThemeDrawer && (
-          <div className="absolute right-0 top-12 z-50 w-72">
-            <ThemeToggle />
-          </div>
-        )}
+          {/* Theme Drawer Popover */}
+          {showThemeDrawer && (
+            <div className="absolute right-0 top-12 z-50 w-72 animate-pop">
+              <ThemeToggle />
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

@@ -48,9 +48,9 @@ export const GrandmasterNumpad: React.FC = () => {
   const digits = Array.from({ length: size }, (_, i) => i + 1);
 
   return (
-    <div className="flex flex-col gap-3 w-full max-w-xl mx-auto">
-      {/* Mode Selector Tabs */}
-      <div className="flex items-center justify-between bg-slate-900/90 backdrop-blur p-1 rounded-xl border border-slate-800">
+    <div className="flex flex-col gap-3 w-full max-w-xl mx-auto kudosu-panel p-3.5">
+      {/* Mode Selector Tabs & Undo/Redo */}
+      <div className="flex items-center justify-between bg-[var(--bg-card-subtle)] p-1 rounded-xl border border-[var(--border-subtle)]">
         <div className="flex gap-1 flex-1">
           {modes.map(m => {
             const Icon = m.icon;
@@ -59,10 +59,10 @@ export const GrandmasterNumpad: React.FC = () => {
               <button
                 key={m.id}
                 onClick={() => setInputMode(m.id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-150 ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-bold transition-all duration-150 ${
                   isActive
-                    ? 'bg-cyan-500 text-slate-950 shadow-md scale-[1.02]'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-[var(--text-accent)] text-slate-950 shadow-md font-extrabold scale-[1.02]'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -73,11 +73,11 @@ export const GrandmasterNumpad: React.FC = () => {
         </div>
 
         {/* Undo / Redo / Erase */}
-        <div className="flex items-center gap-1 pl-2 border-l border-slate-800">
+        <div className="flex items-center gap-1 pl-2 border-l border-[var(--border-subtle)]">
           <button
             onClick={undo}
             disabled={historyIndex < 0}
-            className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] disabled:opacity-30 disabled:pointer-events-none transition-colors"
             title="Undo (Ctrl+Z)"
           >
             <Undo2 className="w-4 h-4" />
@@ -85,14 +85,14 @@ export const GrandmasterNumpad: React.FC = () => {
           <button
             onClick={redo}
             disabled={historyIndex >= history.length - 1}
-            className="p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)] disabled:opacity-30 disabled:pointer-events-none transition-colors"
             title="Redo (Ctrl+Y)"
           >
             <Redo2 className="w-4 h-4" />
           </button>
           <button
             onClick={clearSelected}
-            className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-rose-400 hover:bg-[var(--bg-card)] transition-colors"
             title="Clear Cell (Backspace)"
           >
             <Eraser className="w-4 h-4" />
@@ -102,7 +102,7 @@ export const GrandmasterNumpad: React.FC = () => {
 
       {/* Digits Numpad Grid */}
       <div
-        className="grid gap-1.5"
+        className="grid gap-2"
         style={{
           gridTemplateColumns: size === 16 ? 'repeat(8, minmax(0, 1fr))' : `repeat(${size}, minmax(0, 1fr))`,
         }}
@@ -116,14 +116,14 @@ export const GrandmasterNumpad: React.FC = () => {
               key={d}
               onClick={() => inputDigit(d, autoPrune)}
               disabled={isComplete && inputMode === 'normal'}
-              className={`relative flex flex-col items-center justify-center py-2.5 md:py-3.5 rounded-xl border font-bold text-lg md:text-xl tabular-nums transition-all duration-150 select-none shadow-sm ${
+              className={`relative flex flex-col items-center justify-center py-3 rounded-xl border font-mono font-extrabold text-xl md:text-2xl tabular-nums transition-all duration-150 select-none shadow-sm ${
                 isComplete
-                  ? 'bg-slate-950/40 border-slate-900 text-slate-600 opacity-40 cursor-default'
-                  : 'bg-slate-900/90 border-slate-800 text-slate-100 hover:bg-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 active:scale-95'
+                  ? 'bg-[var(--bg-card-subtle)] border-[var(--border-subtle)] text-[var(--text-note)] opacity-40 cursor-default'
+                  : 'bg-[var(--bg-card-subtle)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--border-active)] hover:text-[var(--text-accent)] active:scale-95'
               }`}
             >
               <span>{size === 16 ? digitToMonsterChar(d) : d}</span>
-              <span className="text-[9px] font-normal text-slate-500 leading-none mt-0.5">
+              <span className="text-[10px] font-sans font-medium text-[var(--text-secondary)] leading-none mt-0.5">
                 {isComplete ? '✓' : remaining}
               </span>
             </button>

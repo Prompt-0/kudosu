@@ -24,13 +24,14 @@ import { AnalyticsDashboard } from './components/analytics/AnalyticsDashboard';
 import { PuzzleCreator } from './components/creator/PuzzleCreator';
 import { AcademyLesson } from './types/academy';
 import { PuzzleDefinition } from './types/sudoku';
+import { ShieldAlert, Sparkles, Flame } from 'lucide-react';
 
 type ActiveView = 'game' | 'academy-hub' | 'lesson' | 'analytics' | 'creator';
 
 export const App: React.FC = () => {
-  const { puzzle, initGame, inputMode, isCompleted } = useGameStore();
-  const { theme } = useSettingsStore();
-  const { loadStats } = useStatsStore();
+  const { puzzle, initGame, inputMode, isCompleted, mistakesCount, hintsUsed } = useGameStore();
+  const { theme, assistanceMode } = useSettingsStore();
+  const { loadStats, profile } = useStatsStore();
 
   const [activeView, setActiveView] = useState<ActiveView>('game');
   const [activeLesson, setActiveLesson] = useState<AcademyLesson | null>(null);
@@ -45,7 +46,6 @@ export const App: React.FC = () => {
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
   const [isDailyModalOpen, setIsDailyModalOpen] = useState(false);
 
-  // Initialize theme, stats and default puzzle on mount
   useEffect(() => {
     document.documentElement.className = `theme-${theme}`;
     loadStats();
@@ -75,10 +75,10 @@ export const App: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-white transition-colors duration-300"
+      className="min-h-screen flex flex-col font-sans transition-colors duration-300"
       style={{
-        backgroundColor: 'var(--bg-primary)',
-        color: 'var(--text-main)',
+        backgroundColor: 'var(--bg-app)',
+        color: 'var(--text-primary)',
       }}
     >
       {/* Top App Header */}
@@ -94,33 +94,87 @@ export const App: React.FC = () => {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col items-center justify-start p-3 md:p-6 w-full max-w-5xl mx-auto">
+      <main className="flex-1 flex flex-col justify-start p-3 md:p-6 w-full max-w-7xl mx-auto">
         {activeView === 'game' ? (
-          <div className="flex flex-col gap-4 w-full items-center">
-            {/* Live Racing Bar */}
-            <RivalProgressBar rivalDifficulty="club" />
+          /* Dual-Wing Desktop Cockpit Layout */
+          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_320px] gap-5 items-start">
+            {/* Left Wing / Tactical HUD */}
+            <aside className="flex flex-col gap-3.5 order-2 lg:order-1">
+              {/* Game Status Card */}
+              {puzzle && (
+                <div className="kudosu-panel p-4 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                      Current Matrix
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[var(--bg-card-subtle)] text-[var(--text-accent)] border border-[var(--border-subtle)]">
+                      {puzzle.variant.toUpperCase()}
+                    </span>
+                  </div>
 
-            {/* Specialized Variant HUDs */}
-            {puzzle?.variant === 'killer' && <KillerCombinationsDrawer />}
-            {puzzle?.variant === 'samurai' && (
-              <SamuraiRadarMap
-                activeGridIndex={activeSamuraiGridIndex}
-                onSelectGrid={setActiveSamuraiGridIndex}
-              />
-            )}
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-lg font-extrabold capitalize text-[var(--text-primary)]">
+                      {puzzle.difficulty}
+                    </span>
+                    <span className="text-xs font-mono font-semibold text-[var(--text-secondary)]">
+                      Score: {puzzle.difficultyScore}
+                    </span>
+                  </div>
 
-            {/* Board */}
-            <SudokuBoard />
+                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[var(--border-subtle)] text-center">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-[var(--text-secondary)] font-semibold flex items-center justify-center gap-0.5">
+                        <Flame className="w-3 h-3 text-rose-500" /> Streak
+                      </span>
+                      <span className="font-mono font-bold text-xs mt-0.5">{profile.currentStreak}d</span>
+                    </div>
 
-            {/* Controls */}
-            <div className="flex flex-col gap-3 w-full items-center">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-[var(--text-secondary)] font-semibold flex items-center justify-center gap-0.5">
+                        <ShieldAlert className="w-3 h-3 text-amber-500" /> Mistakes
+                      </span>
+                      <span className="font-mono font-bold text-xs mt-0.5">
+                        {mistakesCount}{assistanceMode === 'arcade' ? '/3' : ''}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-[var(--text-secondary)] font-semibold flex items-center justify-center gap-0.5">
+                        <Sparkles className="w-3 h-3 text-purple-400" /> Hints
+                      </span>
+                      <span className="font-mono font-bold text-xs mt-0.5">{hintsUsed}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Live Race Track */}
+              <RivalProgressBar rivalDifficulty="club" />
+
+              {/* Variant Specialized Tools */}
+              {puzzle?.variant === 'killer' && <KillerCombinationsDrawer />}
+              {puzzle?.variant === 'samurai' && (
+                <SamuraiRadarMap
+                  activeGridIndex={activeSamuraiGridIndex}
+                  onSelectGrid={setActiveSamuraiGridIndex}
+                />
+              )}
+            </aside>
+
+            {/* Center Stage / Tactile Grid */}
+            <section className="flex flex-col items-center justify-center order-1 lg:order-2">
+              <SudokuBoard />
+            </section>
+
+            {/* Right Wing / Grandmaster Control Deck */}
+            <aside className="flex flex-col gap-3.5 order-3">
               {inputMode === 'color' && <ColorPaletteBar />}
               <GrandmasterNumpad />
               <ActionToolbar
                 onNewGame={() => setIsNewGameModalOpen(true)}
                 onOpenHintModal={() => setIsHintModalOpen(true)}
               />
-            </div>
+            </aside>
           </div>
         ) : activeView === 'academy-hub' ? (
           <AcademyHub

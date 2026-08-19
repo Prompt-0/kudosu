@@ -38,7 +38,6 @@ export const SudokuBoard: React.FC = () => {
   // Keyboard controls listener
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      // Ignore if inside input element
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) {
         return;
       }
@@ -87,7 +86,7 @@ export const SudokuBoard: React.FC = () => {
         clearSelected();
       }
 
-      // Undo (Ctrl+Z or Z)
+      // Undo (Ctrl+Z)
       else if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
         undo();
@@ -118,8 +117,8 @@ export const SudokuBoard: React.FC = () => {
 
   if (!puzzle || cells.length === 0) {
     return (
-      <div className="flex items-center justify-center p-12 text-slate-400">
-        No puzzle loaded.
+      <div className="flex items-center justify-center p-12 text-[var(--text-secondary)]">
+        Loading puzzle matrix...
       </div>
     );
   }
@@ -130,13 +129,12 @@ export const SudokuBoard: React.FC = () => {
   const highlightDigit = activeDigitFilter !== null ? activeDigitFilter : activeValue;
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full max-w-xl mx-auto select-none">
+    <div className="relative flex flex-col items-center justify-center w-full max-w-[500px] mx-auto select-none">
       {/* Board Outer Container */}
       <div
-        className="relative grid w-full aspect-square bg-slate-950 border-2 rounded-2xl shadow-2xl overflow-hidden p-1 gap-[1px]"
+        className="relative grid w-full aspect-square p-2 rounded-2xl shadow-2xl overflow-hidden border-2 border-[var(--border-strong)] bg-[var(--bg-card)]"
         style={{
           gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
-          borderColor: 'var(--border-block)',
         }}
       >
         {/* Cells */}

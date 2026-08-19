@@ -39,6 +39,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   setTheme: (theme: ThemeId) => {
     document.documentElement.className = `theme-${theme}`;
+    document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('kudosu_theme', theme);
     set({ theme });
   },

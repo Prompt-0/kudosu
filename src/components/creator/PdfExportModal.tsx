@@ -34,43 +34,43 @@ export const PdfExportModal: React.FC<PdfExportModalProps> = ({ isOpen, onClose 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 flex flex-col gap-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-md kudosu-panel p-6 flex flex-col gap-4 animate-pop">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
+        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-[var(--bg-card-subtle)] text-[var(--text-accent)] border border-[var(--border-subtle)]">
               <Printer className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-100 text-base">Printable PDF Studio</h3>
-              <p className="text-xs text-slate-400">High-resolution vector print sheets</p>
+              <h3 className="font-extrabold text-[var(--text-primary)] text-base">Printable PDF Studio</h3>
+              <p className="text-xs text-[var(--text-secondary)]">High-resolution vector print sheets</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-white">
+          <button onClick={onClose} className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form Options */}
-        <div className="flex flex-col gap-3 text-xs">
+        <div className="flex flex-col gap-3.5 text-xs">
           <div>
-            <label className="block text-slate-400 mb-1 font-semibold">Sheet Title:</label>
+            <label className="block text-[var(--text-secondary)] mb-1.5 font-bold">Sheet Title:</label>
             <input
               type="text"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500 font-medium"
+              className="w-full bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl px-3.5 py-2.5 text-[var(--text-primary)] font-bold focus:outline-none focus:border-[var(--border-active)]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Paper Format:</label>
+              <label className="block text-[var(--text-secondary)] mb-1.5 font-bold">Paper Format:</label>
               <select
                 value={paperSize}
                 onChange={e => setPaperSize(e.target.value as 'a4' | 'letter')}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-medium"
+                className="w-full bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl px-3 py-2.5 text-[var(--text-primary)] font-bold"
               >
                 <option value="a4">A4 (210 x 297 mm)</option>
                 <option value="letter">US Letter (8.5 x 11 in)</option>
@@ -78,12 +78,12 @@ export const PdfExportModal: React.FC<PdfExportModalProps> = ({ isOpen, onClose 
             </div>
 
             <div className="flex flex-col justify-end">
-              <label className="flex items-center gap-2 cursor-pointer bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-slate-300 font-medium">
+              <label className="flex items-center gap-2 cursor-pointer bg-[var(--bg-card-subtle)] p-2.5 rounded-xl border border-[var(--border-subtle)] text-[var(--text-primary)] font-bold">
                 <input
                   type="checkbox"
                   checked={includeSolutions}
                   onChange={e => setIncludeSolutions(e.target.checked)}
-                  className="accent-cyan-500 w-4 h-4 rounded"
+                  className="accent-[var(--border-strong)] w-4 h-4 rounded"
                 />
                 <span>Include Solution Key</span>
               </label>
@@ -92,14 +92,11 @@ export const PdfExportModal: React.FC<PdfExportModalProps> = ({ isOpen, onClose 
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-800">
-          <button onClick={onClose} className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">
+        <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)]">
+          <button onClick={onClose} className="px-4 py-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             Cancel
           </button>
-          <button
-            onClick={handleDownloadPdf}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold rounded-xl shadow-lg transition-all active:scale-95"
-          >
+          <button onClick={handleDownloadPdf} className="kudosu-btn-primary flex items-center gap-2 px-5 py-2.5 text-xs font-bold">
             <Download className="w-4 h-4" />
             <span>Download Vector PDF</span>
           </button>

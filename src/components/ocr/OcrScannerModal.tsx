@@ -23,7 +23,6 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    // Validate uniqueness whenever extractedGrid changes
     const check = DLXSolver.solveGrid(extractedGrid, 9, 3, 3, 'classic', undefined, undefined, 2);
     if (check.solutionsCount === 1) {
       setUniquenessStatus('Unique Valid Solution Found! (Ready to Play)');
@@ -89,45 +88,45 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-2xl kudosu-panel p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto animate-pop">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
+            <div className="p-2 rounded-xl bg-[var(--bg-card-subtle)] text-[var(--text-accent)] border border-[var(--border-subtle)]">
               <Camera className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-100 text-base">Camera & Image Sudoku Scanner</h3>
-              <p className="text-xs text-slate-400">100% Client-Side Computer Vision OCR</p>
+              <h3 className="font-extrabold text-[var(--text-primary)] text-base">Camera & Image Sudoku Scanner</h3>
+              <p className="text-xs text-[var(--text-secondary)]">100% Client-Side Computer Vision OCR</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-slate-400 hover:text-white rounded-lg">
+          <button onClick={onClose} className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Upload / Capture options */}
         <div className="flex gap-3">
-          <label className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl cursor-pointer transition-colors shadow-sm">
-            <Upload className="w-4 h-4 text-cyan-400" />
+          <label className="flex-1 flex items-center justify-center gap-2 py-3 px-4 kudosu-btn-secondary text-xs font-bold cursor-pointer transition-colors">
+            <Upload className="w-4 h-4 text-[var(--text-accent)]" />
             <span>Upload Newspaper / Book Photo</span>
             <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
           </label>
         </div>
 
         {/* Side-by-Side Inspection & Correction Grid */}
-        <div className="flex flex-col md:flex-row gap-5 items-center justify-center bg-slate-950 p-4 rounded-2xl border border-slate-800">
+        <div className="flex flex-col md:flex-row gap-5 items-center justify-center bg-[var(--bg-card-subtle)] p-4 rounded-2xl border border-[var(--border-subtle)]">
           {imageSrc && (
             <div className="flex flex-col items-center gap-1.5 max-w-[200px]">
-              <span className="text-[11px] font-bold text-slate-400">Uploaded Image Preview:</span>
-              <img src={imageSrc} alt="Source" className="w-44 h-44 object-contain rounded-lg border border-slate-800" />
+              <span className="text-[11px] font-bold text-[var(--text-secondary)]">Uploaded Image Preview:</span>
+              <img src={imageSrc} alt="Source" className="w-44 h-44 object-contain rounded-lg border border-[var(--border-subtle)]" />
             </div>
           )}
 
           <div className="flex flex-col items-center gap-1.5">
-            <span className="text-[11px] font-bold text-cyan-400">Extracted Grid (Click to edit):</span>
-            <div className="grid grid-cols-9 gap-[1px] bg-slate-800 p-1 rounded-xl border border-slate-700 w-64 h-64">
+            <span className="text-[11px] font-bold text-[var(--text-accent)]">Extracted Grid (Click to edit):</span>
+            <div className="grid grid-cols-9 gap-[1px] bg-[var(--border-subtle)] p-1 rounded-xl w-64 h-64">
               {extractedGrid.map((row, r) =>
                 row.map((val, c) => (
                   <input
@@ -136,7 +135,7 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
                     maxLength={1}
                     value={val !== null ? val : ''}
                     onChange={e => handleCellChange(r, c, e.target.value)}
-                    className="w-full h-full text-center bg-slate-900 font-bold text-sm text-cyan-300 focus:bg-cyan-950 focus:outline-none rounded-[2px]"
+                    className="w-full h-full text-center bg-[var(--cell-bg)] font-mono font-bold text-sm text-[var(--text-accent)] focus:bg-[var(--cell-selected)] focus:outline-none rounded-[2px]"
                   />
                 ))
               )}
@@ -146,26 +145,20 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
 
         {/* Uniqueness Status */}
         {uniquenessStatus && (
-          <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center gap-2 text-xs">
+          <div className="p-3 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl flex items-center gap-2 text-xs">
             <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <span className="text-slate-300">{uniquenessStatus}</span>
+            <span className="text-[var(--text-primary)]">{uniquenessStatus}</span>
           </div>
         )}
 
         <canvas ref={canvasRef} className="hidden" />
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-800">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white"
-          >
+        <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)]">
+          <button onClick={onClose} className="px-4 py-2 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
             Cancel
           </button>
-          <button
-            onClick={handleStartGame}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold rounded-xl shadow-lg transition-all active:scale-95"
-          >
+          <button onClick={handleStartGame} className="kudosu-btn-primary flex items-center gap-2 px-5 py-2.5 text-xs font-bold">
             <CheckCircle2 className="w-4 h-4" />
             <span>Load & Solve in Kudosu</span>
           </button>

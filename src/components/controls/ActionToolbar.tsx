@@ -30,9 +30,9 @@ export const ActionToolbar: React.FC<ActionToolbarProps> = ({ onNewGame, onOpenH
       <button
         onClick={handleHintClick}
         disabled={isCompleted}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-cyan-950/50 transition-all duration-150 active:scale-95"
+        className="kudosu-btn-primary flex items-center gap-2 px-4 py-2 text-xs font-bold"
       >
-        <Lightbulb className="w-4 h-4 text-yellow-300 animate-pulse" />
+        <Lightbulb className="w-4 h-4 text-amber-300 animate-pulse" />
         <span>Deduction Hint</span>
       </button>
 
@@ -40,9 +40,9 @@ export const ActionToolbar: React.FC<ActionToolbarProps> = ({ onNewGame, onOpenH
       <button
         onClick={checkBoard}
         disabled={isCompleted}
-        className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold rounded-xl transition-colors"
+        className="kudosu-btn-secondary flex items-center gap-1.5 px-3 py-2 text-xs font-bold"
       >
-        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
         <span>Check</span>
       </button>
 
@@ -50,10 +50,10 @@ export const ActionToolbar: React.FC<ActionToolbarProps> = ({ onNewGame, onOpenH
       <button
         onClick={autoFillCandidates}
         disabled={isCompleted}
-        className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold rounded-xl transition-colors"
+        className="kudosu-btn-secondary flex items-center gap-1.5 px-3 py-2 text-xs font-bold"
         title="Auto-calculate all mathematically possible candidates"
       >
-        <Wand2 className="w-3.5 h-3.5 text-purple-400" />
+        <Wand2 className="w-4 h-4 text-purple-400" />
         <span>Auto-Notes</span>
       </button>
 
@@ -61,28 +61,28 @@ export const ActionToolbar: React.FC<ActionToolbarProps> = ({ onNewGame, onOpenH
       <button
         onClick={cleanInvalidCandidates}
         disabled={isCompleted}
-        className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold rounded-xl transition-colors"
+        className="kudosu-btn-secondary flex items-center gap-1.5 px-3 py-2 text-xs font-bold"
         title="Remove candidates that conflict with existing digits"
       >
-        <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+        <ShieldAlert className="w-4 h-4 text-amber-400" />
         <span>Clean Notes</span>
       </button>
 
       {/* Restart */}
       <button
         onClick={restartGame}
-        className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white rounded-xl transition-colors"
+        className="kudosu-btn-secondary p-2"
         title="Restart Current Puzzle"
       >
-        <RotateCcw className="w-4 h-4" />
+        <RotateCcw className="w-4 h-4 text-[var(--text-secondary)]" />
       </button>
 
       {/* New Game */}
       <button
         onClick={onNewGame}
-        className="flex items-center gap-1 px-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-bold rounded-xl transition-colors"
+        className="kudosu-btn-secondary flex items-center gap-1 px-3 py-2 text-xs font-bold"
       >
-        <Plus className="w-3.5 h-3.5 text-cyan-400" />
+        <Plus className="w-4 h-4 text-[var(--text-accent)]" />
         <span>New Puzzle</span>
       </button>
     </div>
