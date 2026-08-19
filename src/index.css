@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root, html.theme-midnight, .theme-midnight {
     --bg-primary: #030712;
     --bg-secondary: #0f172a;
     --bg-tertiary: #1e293b;
@@ -24,17 +24,17 @@
     --border-block: #0284c7;
     --border-active: #38bdf8;
     
-    --color-p1: #f87171; /* red */
-    --color-p2: #fb923c; /* orange */
-    --color-p3: #facc15; /* yellow */
-    --color-p4: #4ade80; /* green */
-    --color-p5: #2dd4bf; /* teal */
-    --color-p6: #38bdf8; /* sky */
-    --color-p7: #a78bfa; /* purple */
-    --color-p8: #f472b6; /* pink */
+    --color-p1: #f87171;
+    --color-p2: #fb923c;
+    --color-p3: #facc15;
+    --color-p4: #4ade80;
+    --color-p5: #2dd4bf;
+    --color-p6: #38bdf8;
+    --color-p7: #a78bfa;
+    --color-p8: #f472b6;
   }
 
-  .theme-sepia {
+  html.theme-sepia, .theme-sepia {
     --bg-primary: #fbf7ee;
     --bg-secondary: #f4ecd8;
     --bg-tertiary: #e8dcc4;
@@ -65,7 +65,7 @@
     --color-p8: #f9a8d4;
   }
 
-  .theme-matcha {
+  html.theme-matcha, .theme-matcha {
     --bg-primary: #0a140f;
     --bg-secondary: #13241b;
     --bg-tertiary: #1c3327;
@@ -87,7 +87,7 @@
     --border-active: #34d399;
   }
 
-  .theme-neon {
+  html.theme-neon, .theme-neon {
     --bg-primary: #050510;
     --bg-secondary: #0d0c22;
     --bg-tertiary: #181639;
@@ -109,7 +109,7 @@
     --border-active: #06b6d4;
   }
 
-  .theme-amber {
+  html.theme-amber, .theme-amber {
     --bg-primary: #0c0800;
     --bg-secondary: #1a1202;
     --bg-tertiary: #2e2004;
@@ -131,7 +131,7 @@
     --border-active: #fbbf24;
   }
 
-  .theme-contrast {
+  html.theme-contrast, .theme-contrast {
     --bg-primary: #000000;
     --bg-secondary: #111111;
     --bg-tertiary: #222222;
@@ -154,12 +154,10 @@
   }
 }
 
-/* Tabular numeric rendering across all numbers */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
-/* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

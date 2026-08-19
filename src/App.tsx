@@ -74,7 +74,13 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-white transition-colors duration-300">
+    <div
+      className="min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-white transition-colors duration-300"
+      style={{
+        backgroundColor: 'var(--bg-primary)',
+        color: 'var(--text-main)',
+      }}
+    >
       {/* Top App Header */}
       <Header
         onOpenAcademy={() => setActiveView('academy-hub')}
