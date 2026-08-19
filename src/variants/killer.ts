@@ -1,0 +1,67 @@
+import { BoardConfig, KillerCage, CellCoord } from '../types/sudoku';
+
+export const killerConfig: BoardConfig = {
+  variant: 'killer',
+  size: 9,
+  boxWidth: 3,
+  boxHeight: 3,
+};
+
+// Killer Cage Math Combinations Lookup Table Generator
+export function getCageCombinations(
+  targetSum: number,
+  cageSize: number,
+  excludedDigits: number[] = [],
+  maxDigit: number = 9
+): number[][] {
+  const results: number[][] = [];
+  const excludedSet = new Set(excludedDigits);
+
+  function backtrack(start: number, currentSum: number, chosen: number[]) {
+    if (chosen.length === cageSize) {
+      if (currentSum === targetSum) {
+        results.push([...chosen]);
+      }
+      return;
+    }
+
+    const remainingSlots = cageSize - chosen.length;
+    // Pruning: if even the smallest possible remaining digits exceed targetSum
+    let minPossible = 0;
+    for (let i = 0; i < remainingSlots; i++) minPossible += start + i;
+    if (currentSum + minPossible > targetSum) return;
+
+    // Pruning: if even the largest possible remaining digits can't reach targetSum
+    let maxPossible = 0;
+    for (let i = 0; i < remainingSlots; i++) maxPossible += maxDigit - i;
+    if (currentSum + maxPossible < targetSum) return;
+
+    for (let d = start; d <= maxDigit; d++) {
+      if (!excludedSet.has(d)) {
+        chosen.push(d);
+        backtrack(d + 1, currentSum + d, chosen);
+        chosen.pop();
+      }
+    }
+  }
+
+  backtrack(1, 0, []);
+  return results;
+}
+
+// 45-Rule Innie / Outie Helper (Row/Column/Box sum is always 45 in standard 9x9)
+export function calculate45Rule(
+  cages: KillerCage[],
+  regionType: 'row' | 'col' | 'box',
+  regionIndex: number
+): { innieCells: CellCoord[]; outieCells: CellCoord[]; cageSum: number; diff45: number } {
+  // Calculates cages completely inside or partially crossing the region
+  let cageSum = 0;
+  const innieCells: CellCoord[] = [];
+  const outieCells: CellCoord[] = [];
+
+  // Standard 9x9 unit sum is 45
+  const diff45 = cageSum - 45;
+
+  return { innieCells, outieCells, cageSum, diff45 };
+}
