@@ -5,6 +5,7 @@ import {
   PuzzleDefinition,
   InputMode,
   MoveAction,
+  GameStatus,
 } from '../types/sudoku';
 import { DeductionProofStep } from '../types/solver';
 import { SoundManager } from '../audio/soundManager';
@@ -23,8 +24,10 @@ interface GameState {
   history: MoveAction[];
   historyIndex: number;
   timerMs: number;
+  hasStarted: boolean;
   isPaused: boolean;
   isCompleted: boolean;
+  gameStatus: GameStatus;
   mistakesCount: number;
   hintsUsed: number;
   activeHintStep: DeductionProofStep | null;
@@ -32,6 +35,7 @@ interface GameState {
 
   // Actions
   initGame: (puzzle: PuzzleDefinition) => void;
+  startGame: () => void;
   selectCell: (coord: CellCoord, isMulti?: boolean) => void;
   setInputMode: (mode: InputMode) => void;
   setActiveDigitFilter: (d: number | null) => void;
@@ -64,8 +68,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   history: [],
   historyIndex: -1,
   timerMs: 0,
+  hasStarted: false,
   isPaused: false,
   isCompleted: false,
+  gameStatus: 'ready',
   mistakesCount: 0,
   hintsUsed: 0,
   activeHintStep: null,
@@ -103,13 +109,21 @@ export const useGameStore = create<GameState>((set, get) => ({
       history: [],
       historyIndex: -1,
       timerMs: 0,
+      hasStarted: false,
       isPaused: false,
       isCompleted: false,
+      gameStatus: 'ready',
       mistakesCount: 0,
       hintsUsed: 0,
       activeHintStep: null,
       cellHesitationMs: {},
     });
+  },
+
+  startGame: () => {
+    if (!get().hasStarted && !get().isCompleted) {
+      set({ hasStarted: true, isPaused: false, gameStatus: 'playing' });
+    }
   },
 
   selectCell: (coord: CellCoord, isMulti: boolean = false) => {
@@ -132,8 +146,13 @@ export const useGameStore = create<GameState>((set, get) => ({
   setActivePaletteColor: (c: number) => set({ activePaletteColor: c }),
 
   inputDigit: (digit: number, autoPrune: boolean = true) => {
-    const { cells, selectedCells, inputMode, activePaletteColor, puzzle, history, historyIndex } = get();
+    const { cells, selectedCells, inputMode, activePaletteColor, puzzle, history, historyIndex, hasStarted } = get();
     if (!puzzle || selectedCells.length === 0 || get().isCompleted) return;
+
+    // Automatically begin game timing on first move
+    if (!hasStarted) {
+      get().startGame();
+    }
 
     if (inputMode === 'corner') {
       get().toggleCornerMark(digit);
@@ -225,8 +244,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   toggleCornerMark: (digit: number) => {
     SoundManager.pencil();
-    const { cells, selectedCells, history, historyIndex } = get();
+    const { cells, selectedCells, history, historyIndex, hasStarted } = get();
     if (selectedCells.length === 0) return;
+
+    if (!hasStarted) {
+      get().startGame();
+    }
 
     const newCells = cells.map(row => row.map(cell => ({ ...cell })));
     const prevValues: MoveAction['prevValues'] = [];
@@ -279,8 +302,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   toggleCenterMark: (digit: number) => {
     SoundManager.pencil();
-    const { cells, selectedCells, history, historyIndex } = get();
+    const { cells, selectedCells, history, historyIndex, hasStarted } = get();
     if (selectedCells.length === 0) return;
+
+    if (!hasStarted) {
+      get().startGame();
+    }
 
     const newCells = cells.map(row => row.map(cell => ({ ...cell })));
     const prevValues: MoveAction['prevValues'] = [];
@@ -333,8 +360,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   applyColor: (color: number | null) => {
     SoundManager.click();
-    const { cells, selectedCells, history, historyIndex } = get();
+    const { cells, selectedCells, history, historyIndex, hasStarted } = get();
     if (selectedCells.length === 0) return;
+
+    if (!hasStarted) {
+      get().startGame();
+    }
 
     const newCells = cells.map(row => row.map(cell => ({ ...cell })));
     const prevValues: MoveAction['prevValues'] = [];
@@ -481,8 +512,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   autoFillCandidates: () => {
     SoundManager.pencil();
-    const { cells, puzzle } = get();
+    const { cells, puzzle, hasStarted } = get();
     if (!puzzle) return;
+
+    if (!hasStarted) {
+      get().startGame();
+    }
 
     const rawGrid = cells.map(row => row.map(c => c.value));
     const cGrid = new CandidateGrid(rawGrid, puzzle.grid.length);
@@ -505,8 +540,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   cleanInvalidCandidates: () => {
     SoundManager.erase();
-    const { cells, puzzle } = get();
+    const { cells, puzzle, hasStarted } = get();
     if (!puzzle) return;
+
+    if (!hasStarted) {
+      get().startGame();
+    }
 
     const rawGrid = cells.map(row => row.map(c => c.value));
     const cGrid = new CandidateGrid(rawGrid, puzzle.grid.length);
@@ -548,20 +587,23 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
 
     if (!hasEmpty && !hasMistake && !get().isCompleted) {
-      // Puzzle solved!
       SoundManager.fanfare();
       confetti({
         particleCount: 120,
         spread: 80,
         origin: { y: 0.6 },
       });
-      set({ isCompleted: true });
+      set({ isCompleted: true, gameStatus: 'completed' });
     }
   },
 
   requestHint: () => {
-    const { cells, puzzle, hintsUsed } = get();
+    const { cells, puzzle, hintsUsed, hasStarted } = get();
     if (!puzzle || get().isCompleted) return null;
+
+    if (!hasStarted) {
+      get().startGame();
+    }
 
     const rawGrid = cells.map(row => row.map(c => c.value));
     const step = HumanSolver.getNextStep(rawGrid, puzzle.grid.length);
@@ -576,7 +618,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   applyHintStep: (step: DeductionProofStep) => {
     SoundManager.click();
-    const { cells, history, historyIndex } = get();
+    const { cells, history, historyIndex, hasStarted } = get();
+
+    if (!hasStarted) {
+      get().startGame();
+    }
+
     const newCells = cells.map(row => row.map(c => ({ ...c })));
     const prevValues: MoveAction['prevValues'] = [];
     const newValues: MoveAction['newValues'] = [];
@@ -652,7 +699,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   clearHint: () => set({ activeHintStep: null }),
 
   tickTimer: (deltaMs: number) => {
-    if (!get().isPaused && !get().isCompleted && get().puzzle) {
+    const { hasStarted, isPaused, isCompleted, puzzle } = get();
+    if (hasStarted && !isPaused && !isCompleted && puzzle) {
       const nextTime = get().timerMs + deltaMs;
       // Track active cell hesitation
       const sel = get().selectedCells[0];
@@ -665,7 +713,21 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
   },
 
-  togglePause: () => set(state => ({ isPaused: !state.isPaused })),
+  togglePause: () => {
+    const { hasStarted, isPaused, isCompleted } = get();
+    if (isCompleted) return;
+
+    if (!hasStarted) {
+      get().startGame();
+      return;
+    }
+
+    const nextPaused = !isPaused;
+    set({
+      isPaused: nextPaused,
+      gameStatus: nextPaused ? 'paused' : 'playing',
+    });
+  },
 
   restartGame: () => {
     const { puzzle } = get();

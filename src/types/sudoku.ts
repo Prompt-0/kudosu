@@ -23,6 +23,8 @@ export type InputMode = 'normal' | 'corner' | 'center' | 'color';
 
 export type AssistanceMode = 'zen' | 'arcade' | 'speedrun';
 
+export type GameStatus = 'ready' | 'playing' | 'paused' | 'completed';
+
 export interface CellCoord {
   row: number;
   col: number;

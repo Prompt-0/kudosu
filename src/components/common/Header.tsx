@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSettings,
   onOpenNewGame,
 }) => {
-  const { puzzle, timerMs, isPaused, togglePause } = useGameStore();
+  const { puzzle, timerMs, hasStarted, isPaused, togglePause, startGame } = useGameStore();
   const { soundMuted, toggleSound, showTimer } = useSettingsStore();
   const [showThemeDrawer, setShowThemeDrawer] = useState(false);
 
@@ -47,6 +47,14 @@ export const Header: React.FC<HeaderProps> = ({
   const minutes = Math.floor(seconds / 60);
   const remSec = seconds % 60;
   const timeFormatted = `${minutes}:${String(remSec).padStart(2, '0')}`;
+
+  const handleTimerClick = () => {
+    if (!hasStarted) {
+      startGame();
+    } else {
+      togglePause();
+    }
+  };
 
   return (
     <header className="w-full border-b border-[var(--border-subtle)] bg-[var(--bg-card)]/90 backdrop-blur-md sticky top-0 z-40 transition-colors">
@@ -73,19 +81,26 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Live Stopwatch Pill */}
+          {/* Live Stopwatch Pill with Lazy Start */}
           {showTimer && puzzle && (
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-xs font-mono font-bold text-[var(--text-primary)] shadow-sm">
-              <button
-                onClick={togglePause}
-                className="text-[var(--text-secondary)] hover:text-[var(--text-accent)] transition-colors"
-                title={isPaused ? 'Resume' : 'Pause'}
-              >
-                {isPaused ? <Play className="w-3.5 h-3.5 text-amber-400" /> : <Pause className="w-3.5 h-3.5" />}
-              </button>
-              <span className={isPaused ? 'text-amber-400 animate-pulse' : 'text-[var(--text-primary)]'}>
-                {timeFormatted}
-              </span>
+            <div
+              onClick={handleTimerClick}
+              className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] hover:border-[var(--border-active)] rounded-xl text-xs font-mono font-bold text-[var(--text-primary)] shadow-sm cursor-pointer transition-colors"
+              title={!hasStarted ? 'Click to Start Timer' : isPaused ? 'Click to Resume' : 'Click to Pause'}
+            >
+              {!hasStarted ? (
+                <>
+                  <Play className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                  <span className="text-emerald-400">READY (0:00)</span>
+                </>
+              ) : (
+                <>
+                  {isPaused ? <Play className="w-3.5 h-3.5 text-amber-400" /> : <Pause className="w-3.5 h-3.5" />}
+                  <span className={isPaused ? 'text-amber-400 animate-pulse' : 'text-[var(--text-primary)]'}>
+                    {timeFormatted}
+                  </span>
+                </>
+              )}
             </div>
           )}
         </div>
