@@ -1,6 +1,6 @@
 import React from 'react';
 import { DeductionProofStep } from '../../types/solver';
-import { ArrowRight, Sparkles, Check, X } from 'lucide-react';
+import { Sparkles, Check, X } from 'lucide-react';
 
 interface TechniqueProofVisualizerProps {
   step: DeductionProofStep;

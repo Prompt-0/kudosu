@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { OcrPipeline } from '../../ocr/ocrPipeline';
 import { DLXSolver } from '../../engine/dlx/dlxSolver';
-import { Camera, Upload, CheckCircle2, X, AlertCircle, RefreshCw } from 'lucide-react';
+import { Camera, Upload, CheckCircle2, X, AlertCircle } from 'lucide-react';
 import { PuzzleDefinition } from '../../types/sudoku';
 
 interface OcrScannerModalProps {
@@ -19,12 +19,8 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
     Array.from({ length: 9 }, () => Array(9).fill(null))
   );
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [uniquenessStatus, setUniquenessStatus] = useState<string | null>(null);
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isCameraActive, setIsCameraActive] = useState(false);
 
   useEffect(() => {
     // Validate uniqueness whenever extractedGrid changes
@@ -52,7 +48,6 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
   };
 
   const processImageSrc = (src: string) => {
-    setIsProcessing(true);
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
@@ -65,7 +60,6 @@ export const OcrScannerModal: React.FC<OcrScannerModalProps> = ({
         const grid = OcrPipeline.processCanvas(canvas);
         setExtractedGrid(grid);
       }
-      setIsProcessing(false);
     };
     img.src = src;
   };

@@ -5,7 +5,6 @@ import { SudokuCell } from './SudokuCell';
 import { ProofLaserOverlay } from './ProofLaserOverlay';
 import { KillerCagesOverlay } from './KillerCagesOverlay';
 import { DiagonalOverlay } from './DiagonalOverlay';
-import { CellCoord } from '../../types/sudoku';
 
 export const SudokuBoard: React.FC = () => {
   const {

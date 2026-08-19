@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AcademyLesson } from '../../types/academy';
 import { ProofLaserOverlay } from '../board/ProofLaserOverlay';
-import { BookOpen, Sparkles, CheckCircle2, ChevronLeft, ArrowRight, ShieldAlert } from 'lucide-react';
+import { BookOpen, Sparkles, CheckCircle2, ChevronLeft, ArrowRight } from 'lucide-react';
 
 interface LessonViewerProps {
   lesson: AcademyLesson;

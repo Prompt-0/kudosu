@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PdfPrintStudio } from '../../pdf/printStudio';
 import { useGameStore } from '../../store/gameStore';
-import { Printer, Download, X, CheckCircle2 } from 'lucide-react';
+import { Printer, Download, X } from 'lucide-react';
 
 interface PdfExportModalProps {
   isOpen: boolean;

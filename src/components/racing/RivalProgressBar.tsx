@@ -2,18 +2,17 @@ import React from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { GhostEngine } from '../../racing/ghostEngine';
 import { AI_RIVALS, AIRivalEngine } from '../../racing/aiRival';
-import { Trophy, Ghost, Bot, Zap } from 'lucide-react';
+import { Ghost, Zap } from 'lucide-react';
 
 interface RivalProgressBarProps {
   rivalDifficulty?: 'novice' | 'club' | 'master' | 'grandmaster';
 }
 
 export const RivalProgressBar: React.FC<RivalProgressBarProps> = ({ rivalDifficulty = 'club' }) => {
-  const { cells, puzzle, timerMs, isCompleted } = useGameStore();
+  const { cells, puzzle, timerMs } = useGameStore();
 
   if (!puzzle) return null;
 
-  const size = cells.length || 9;
   const totalEmptyCells = puzzle.grid.flat().filter(c => c === null || c === 0).length || 40;
   const currentFilledCount = cells.flat().filter(c => !c.given && c.value !== null).length;
   const playerPercent = Math.min(100, Math.round((currentFilledCount / totalEmptyCells) * 100));

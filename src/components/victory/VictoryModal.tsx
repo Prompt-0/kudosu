@@ -1,7 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../../store/gameStore';
-import { useStatsStore } from '../../store/statsStore';
-import { Trophy, Clock, Zap, ShieldAlert, Sparkles, Play, RotateCcw, Plus } from 'lucide-react';
+import { Trophy, Clock, Sparkles, ShieldAlert, Zap, Plus } from 'lucide-react';
 
 interface VictoryModalProps {
   isOpen: boolean;
@@ -16,7 +15,7 @@ export const VictoryModal: React.FC<VictoryModalProps> = ({
   onNewGame,
   onOpenAnalytics,
 }) => {
-  const { puzzle, timerMs, mistakesCount, hintsUsed, restartGame } = useGameStore();
+  const { puzzle, timerMs, mistakesCount, hintsUsed } = useGameStore();
 
   if (!isOpen || !puzzle) return null;
 

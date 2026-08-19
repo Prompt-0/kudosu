@@ -5,13 +5,11 @@ import {
   PuzzleDefinition,
   InputMode,
   MoveAction,
-  SudokuVariant,
 } from '../types/sudoku';
 import { DeductionProofStep } from '../types/solver';
 import { SoundManager } from '../audio/soundManager';
 import { CandidateGrid } from '../engine/human/candidateGrid';
 import { HumanSolver } from '../engine/human/humanSolver';
-import { DLXSolver } from '../engine/dlx/dlxSolver';
 import { VARIANT_CONFIGS } from '../variants/variantRegistry';
 import confetti from 'canvas-confetti';
 

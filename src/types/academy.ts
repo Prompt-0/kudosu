@@ -1,4 +1,4 @@
-import { CellCoord, PuzzleDefinition } from './sudoku';
+import { PuzzleDefinition } from './sudoku';
 import { DeductionProofStep } from './solver';
 
 export interface AcademyLesson {

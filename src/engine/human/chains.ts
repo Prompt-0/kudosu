@@ -56,9 +56,6 @@ export function findSimpleColoring(grid: CandidateGrid): DeductionProofStep | nu
       const queue: { key: string; color: number }[] = [{ key: startKey, color: 0 }];
       visited.set(startKey, 0);
 
-      let hasContradictionInGroup0 = false;
-      let hasContradictionInGroup1 = false;
-
       while (queue.length > 0) {
         const curr = queue.shift()!;
         const currCoord = nodeCoords.get(curr.key)!;
@@ -70,10 +67,6 @@ export function findSimpleColoring(grid: CandidateGrid): DeductionProofStep | nu
           if (!visited.has(neighborKey)) {
             visited.set(neighborKey, nextColor);
             queue.push({ key: neighborKey, color: nextColor });
-          } else if (visited.get(neighborKey) === curr.color) {
-            // Contradiction in chain!
-            if (curr.color === 0) hasContradictionInGroup0 = true;
-            else hasContradictionInGroup1 = true;
           }
         }
       }

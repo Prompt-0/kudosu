@@ -1,5 +1,5 @@
 import { CandidateGrid } from './candidateGrid';
-import { DeductionProofStep, CandidateTarget, LaserLine } from '../../types/solver';
+import { DeductionProofStep, CandidateTarget } from '../../types/solver';
 import { CellCoord } from '../../types/sudoku';
 
 export function findUniqueRectangles(grid: CandidateGrid): DeductionProofStep | null {
@@ -32,7 +32,6 @@ export function findUniqueRectangles(grid: CandidateGrid): DeductionProofStep | 
 
           if (bivalueIndices.length === 3) {
             // Type 1 Unique Rectangle!
-            // 3 cells have exactly [A, B], 4th cell has [A, B, +others]
             const baseCands = cellCands[bivalueIndices[0]];
             const allMatch = bivalueIndices.every(idx => {
               const c = cellCands[idx];

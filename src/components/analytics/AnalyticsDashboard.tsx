@@ -2,7 +2,7 @@ import React from 'react';
 import { useStatsStore } from '../../store/statsStore';
 import { useGameStore } from '../../store/gameStore';
 import { HeatmapOverlay } from './HeatmapOverlay';
-import { Trophy, Zap, Clock, ShieldCheck, Flame, BarChart3, ChevronLeft } from 'lucide-react';
+import { Trophy, Zap, ShieldCheck, Flame, BarChart3, ChevronLeft } from 'lucide-react';
 
 interface AnalyticsDashboardProps {
   onBack: () => void;

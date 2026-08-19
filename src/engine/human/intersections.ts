@@ -1,9 +1,7 @@
 import { CandidateGrid } from './candidateGrid';
 import { DeductionProofStep, CandidateTarget } from '../../types/solver';
-import { CellCoord } from '../../types/sudoku';
 
 export function findPointingSubsets(grid: CandidateGrid): DeductionProofStep | null {
-  // Box-to-Line reduction (Pointing Pairs/Triples)
   for (let b = 0; b < grid.size; b++) {
     const boxCells = grid.getBoxCells(b).filter(
       c => grid.values[c.row][c.col] === null || grid.values[c.row][c.col] === 0
@@ -82,8 +80,6 @@ export function findPointingSubsets(grid: CandidateGrid): DeductionProofStep | n
 }
 
 export function findClaimingSubsets(grid: CandidateGrid): DeductionProofStep | null {
-  // Line-to-Box reduction (Claiming Pairs/Triples)
-  // Rows -> Box
   for (let r = 0; r < grid.size; r++) {
     const rowCells = grid.getRowCells(r).filter(
       c => grid.values[c.row][c.col] === null || grid.values[c.row][c.col] === 0
@@ -126,7 +122,6 @@ export function findClaimingSubsets(grid: CandidateGrid): DeductionProofStep | n
     }
   }
 
-  // Cols -> Box
   for (let c = 0; c < grid.size; c++) {
     const colCells = grid.getColCells(c).filter(
       cell => grid.values[cell.row][cell.col] === null || grid.values[cell.row][cell.col] === 0

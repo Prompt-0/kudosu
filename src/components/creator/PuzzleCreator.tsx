@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { DLXSolver } from '../../engine/dlx/dlxSolver';
 import { DifficultyRater } from '../../engine/human/difficultyRater';
-import { PuzzleDefinition, SudokuVariant, DifficultyLevel } from '../../types/sudoku';
-import { PenTool, CheckCircle2, AlertTriangle, Play, ChevronLeft, Download, RotateCcw } from 'lucide-react';
+import { PuzzleDefinition, DifficultyLevel } from '../../types/sudoku';
+import { PenTool, CheckCircle2, AlertTriangle, Play, ChevronLeft, RotateCcw } from 'lucide-react';
 
 interface PuzzleCreatorProps {
   onBack: () => void;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useStatsStore } from '../../store/statsStore';
 import { PuzzleGenerator } from '../../engine/generator/generator';
 import { PuzzleDefinition } from '../../types/sudoku';
-import { Calendar, Trophy, CheckCircle2, ChevronLeft, ChevronRight, X, Play } from 'lucide-react';
+import { Calendar, CheckCircle2, ChevronLeft, ChevronRight, X, Play } from 'lucide-react';
 
 interface DailyCalendarModalProps {
   isOpen: boolean;
@@ -17,7 +17,7 @@ export const DailyCalendarModal: React.FC<DailyCalendarModalProps> = ({
 }) => {
   const { profile } = useStatsStore();
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const currentYear = new Date().getFullYear();
 
   if (!isOpen) return null;
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ACADEMY_LESSONS } from '../../academy/lessonsData';
 import { AcademyLesson } from '../../types/academy';
-import { GraduationCap, Trophy, ChevronRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { GraduationCap, Trophy, ChevronRight, CheckCircle2 } from 'lucide-react';
 
 interface AcademyHubProps {
   completedLessonIds: string[];
@@ -12,7 +12,6 @@ interface AcademyHubProps {
 export const AcademyHub: React.FC<AcademyHubProps> = ({
   completedLessonIds,
   onSelectLesson,
-  onClose,
 }) => {
   const percent = Math.round((completedLessonIds.length / ACADEMY_LESSONS.length) * 100);
 

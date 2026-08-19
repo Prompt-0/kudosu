@@ -7,7 +7,6 @@ export const killerConfig: BoardConfig = {
   boxHeight: 3,
 };
 
-// Killer Cage Math Combinations Lookup Table Generator
 export function getCageCombinations(
   targetSum: number,
   cageSize: number,
@@ -26,12 +25,10 @@ export function getCageCombinations(
     }
 
     const remainingSlots = cageSize - chosen.length;
-    // Pruning: if even the smallest possible remaining digits exceed targetSum
     let minPossible = 0;
     for (let i = 0; i < remainingSlots; i++) minPossible += start + i;
     if (currentSum + minPossible > targetSum) return;
 
-    // Pruning: if even the largest possible remaining digits can't reach targetSum
     let maxPossible = 0;
     for (let i = 0; i < remainingSlots; i++) maxPossible += maxDigit - i;
     if (currentSum + maxPossible < targetSum) return;
@@ -49,18 +46,14 @@ export function getCageCombinations(
   return results;
 }
 
-// 45-Rule Innie / Outie Helper (Row/Column/Box sum is always 45 in standard 9x9)
 export function calculate45Rule(
-  cages: KillerCage[],
-  regionType: 'row' | 'col' | 'box',
-  regionIndex: number
+  _cages: KillerCage[],
+  _regionType: 'row' | 'col' | 'box',
+  _regionIndex: number
 ): { innieCells: CellCoord[]; outieCells: CellCoord[]; cageSum: number; diff45: number } {
-  // Calculates cages completely inside or partially crossing the region
-  let cageSum = 0;
+  const cageSum = 0;
   const innieCells: CellCoord[] = [];
   const outieCells: CellCoord[] = [];
-
-  // Standard 9x9 unit sum is 45
   const diff45 = cageSum - 45;
 
   return { innieCells, outieCells, cageSum, diff45 };

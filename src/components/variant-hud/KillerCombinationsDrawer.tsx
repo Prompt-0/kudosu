@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getCageCombinations } from '../../variants/killer';
-import { Calculator, X, ChevronRight } from 'lucide-react';
+import { Calculator, X } from 'lucide-react';
 
 export const KillerCombinationsDrawer: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
