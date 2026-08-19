@@ -14,36 +14,29 @@ async function runE2E() {
 
   const page = await context.newPage();
 
-  // 1. Load Main Game & Verify Lazy-Start (Inspection State)
+  // 1. Load Main Game & Verify Default Frosted Overlay
   console.log('1. Navigating to Kudosu on http://localhost:3000...');
   await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
   await page.waitForTimeout(1000);
 
-  // Verify Ready / Inspection Banner is present
-  const readyText = await page.locator('text=Inspection Mode').first();
-  console.log('Inspection Mode visible:', await readyText.isVisible());
+  // Verify Frosted "Ready to Solve?" overlay is present
+  const readyOverlay = page.locator('text=Ready to Solve?').first();
+  console.log('Default Frosted Overlay visible on load:', await readyOverlay.isVisible());
 
-  // Wait 1.5s and verify timer did NOT tick
-  await page.waitForTimeout(1500);
-  const timerReady = await page.locator('text=READY (0:00)').first();
-  console.log('Timer still READY (0:00) after wait:', await timerReady.isVisible());
-
-  // Take Main Board Screenshot in Ready State
+  // Capture Initial Default Frosted Start State
   await page.screenshot({ path: 'screenshots/01_main_board_midnight.png' });
-  console.log('📸 Captured 01_main_board_midnight.png (Inspection Mode)');
+  console.log('📸 Captured 01_main_board_midnight.png (Default Frosted Start)');
 
-  // 2. Test Cell Selection and Move -> Starts Game
-  console.log('2. Interacting with Board & Numpad to start game...');
-  const cells = page.locator('div[class*="aspect-square"]');
-  await cells.first().click();
-  await page.waitForTimeout(200);
+  // 2. Press Spacebar to Start Solving
+  console.log('2. Pressing Spacebar to start solving...');
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(600);
 
-  // Press '1' to place digit and start timer
-  await page.keyboard.press('1');
-  await page.waitForTimeout(800);
+  // Verify overlay disappeared and board is active
+  console.log('Ready Overlay hidden after start:', !(await readyOverlay.isVisible()));
 
-  // 3. Test Pause Overlay (Escape)
-  console.log('3. Testing Frosted Pause Overlay (Point 3)...');
+  // 3. Test Mid-Game Pause Overlay (Escape)
+  console.log('3. Pressing Escape to pause game...');
   await page.keyboard.press('Escape');
   await page.waitForTimeout(500);
 
